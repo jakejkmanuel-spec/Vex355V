@@ -6,7 +6,6 @@
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 
-
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup left_mg({-2, -3, -12},pros::MotorGearset::blue);   
@@ -16,12 +15,11 @@ pros::MotorGroup right_mg({8, 9, 10}, pros::MotorGearset::blue);
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_mg, // left motor group
                               &right_mg, // right motor group
-                              11.45, //track width
+                              11.25, //track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               450, // drivetrain rpm 
                               2 // horizontal drift is 2 (for now)
 );
-
 
 pros::Imu imu(18); //main imu sensor  MAKE SURE TO CHECK PORTS OF BOTH IMUS
 //avg with other imu on port 18 when calling setpose
@@ -71,7 +69,7 @@ lemlib::ControllerSettings angular_controller(3.4, // proportional gain (kP)
 );
 
 // input curve for throttle input during driver control
-lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
+lemlib::ExpoDriveCurve throttle_curve(5, // joystick deadband out of 127
                                      10, // minimum output where drivetrain will move out of 127
                                      1.019 // expo curve gain
 );
@@ -275,32 +273,36 @@ void opcontrol() {
         if(master.get_digital_new_press(DIGITAL_A) && master.get_digital_new_press(DIGITAL_B)){
             autonomous();
         }
-         //Hack to fix PROS key stroke issues. it gives button press even when it not pressed.
-        int r1State = master.get_digital(DIGITAL_R1) ;
+         
+        
+       /* setIntake1(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) * 127);
+        setIntake1(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) * -127);
+        setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) * 127);
+        setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) * -127);*/
+
+        //Hack to fix PROS key stroke issues. it gives button press even when it not pressed.
+       int r1State = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) ;
         setIntake1(r1State * 127);
         if(r1State == 0){
-        setIntake1(master.get_digital(DIGITAL_R2) * -127);
+             setIntake1(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) * -127);
         }
 
-        int l1State =  master.get_digital(DIGITAL_L1);
+        int l1State =  master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 	    setIntake2(l1State* 127);
         if(l1State == 0){
-            setIntake2(master.get_digital(DIGITAL_L2) * -127);
+            setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) * -127);
         }
 
+        if(master.get_digital_new_press(DIGITAL_X) && master.get_digital_new_press(DIGITAL_A)){
+             setIntake1(0);
+             setIntake2(0);
+        }
 
 		if (master.get_digital_new_press(DIGITAL_Y)) {
-		toungue.extend();
-		}
-		if (master.get_digital_new_press(DIGITAL_RIGHT)) {
-		toungue.retract();
+            toungue.toggle();
 		}
 		
-		if (master.get_digital_new_press(DIGITAL_UP)) {
-		//intake1Speed = 120;
-        }
 		
-
         // **Tank drive control**
         int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
