@@ -1,21 +1,21 @@
 
 #include <cmath>
 #include "globals.hpp"
-#include "pros/rtos.hpp"
+//#include "pros/rtos.hpp"
 
 
 void setIntake1(int speed) {
     //pros::lcd::print(5, "Intake1 Speed: %d", speed);
     
     intake1Motor.move(speed);
-    pros::delay(10);
+    //pros::delay(10);
 }
 
 void setIntake2(int speed) {
     //pros::lcd::print(8, "Intake2 Speed: %d", speed);
 
     intake2Motor.move(speed);
-    pros::delay(10);
+    //pros::delay(10);
 }
 
 

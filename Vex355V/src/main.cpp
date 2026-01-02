@@ -8,7 +8,7 @@
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_mg({-2, -3, -12},pros::MotorGearset::blue);   
+pros::MotorGroup left_mg({-2, -7, -12},pros::MotorGearset::blue);   
 pros::MotorGroup right_mg({8, 9, 10}, pros::MotorGearset::blue);  
 
 
@@ -127,9 +127,8 @@ void initialize() {
         pros::lcd::set_text(0, "Calibrating IMU...");
         pros::delay(20);
     }
-    //pros::Task intakeTask1(intake1Task);
-    //pros::Task intakeTask2(intake2Task);
-    
+
+
 
     chassis.calibrate();
     pros::lcd::set_text(0, "IMU Ready!");
@@ -262,14 +261,9 @@ void autonomous() {
 void opcontrol() {
     competition_initialize();
     //autonomous();
-    //pros::delay(500); // delay after autonomous end
-    
     
     while (true) {
-        pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-                         (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-                         (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-        
+       
         if(master.get_digital_new_press(DIGITAL_A) && master.get_digital_new_press(DIGITAL_B)){
             autonomous();
         }
@@ -279,6 +273,16 @@ void opcontrol() {
         setIntake1(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) * -127);
         setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) * 127);
         setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) * -127);*/
+
+        /*int speed = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) ? 127 : 0) +
+                                (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) ? -127 : 0);
+
+        setIntake1(speed);
+
+        speed = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) ? 127 : 0) +
+                                (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) ? -127 : 0);
+
+        setIntake2(speed);*/
 
         //Hack to fix PROS key stroke issues. it gives button press even when it not pressed.
        int r1State = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) ;
@@ -297,16 +301,20 @@ void opcontrol() {
              setIntake1(0);
              setIntake2(0);
         }
-
+        
 		if (master.get_digital_new_press(DIGITAL_Y)) {
             toungue.toggle();
 		}
-		
 		
         // **Tank drive control**
         int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         chassis.tank(leftY, rightY);
+
+        if (!master.is_connected()) {
+            setIntake1(0);
+            setIntake2(0);
+        }
 
         pros::delay(25);  // Prevents CPU overuse
     }
