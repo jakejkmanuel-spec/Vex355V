@@ -5,12 +5,13 @@
 #include "globals.hpp"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
+#include "auton_selector.hpp"
+#include "autonImpl.hpp"
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup left_mg({-2, -7, -12},pros::MotorGearset::blue);   
 pros::MotorGroup right_mg({8, 9, 10}, pros::MotorGearset::blue);  
-
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_mg, // left motor group
@@ -128,10 +129,11 @@ void initialize() {
         pros::delay(20);
     }
 
-
-
     chassis.calibrate();
     pros::lcd::set_text(0, "IMU Ready!");
+    
+    //Screen selector task for Auton
+    auton_selector_init();
 
     pros::Task screen_task([]() {
         while (true) {
@@ -166,31 +168,9 @@ void disabled() {}
  * starts.
  */
 
-int auton_selection = 0; // Global variable to store selected autonomous routine
-
-// List of autonomous routines
-const char* auton_names[] = {
-    "Blue Right Side",
-    "Blue Left Side",
-    "Red Right Side",
-    "Red Left Side",
-    "Skills",
-    "None"
-};
-
-
 
 void competition_initialize() {
     pros::lcd::initialize();
-
-
-    // pros::lcd::print(2, "Selected: %s", auton_names[auton_selection]);
-    
-    //for debugging
-    // while (true){
-    //     pros::lcd::print(3, "Potentiometer: %d", aSelector.get_value());
-    //     pros::delay(20);
-    // }
 
 }
 
@@ -205,7 +185,30 @@ void competition_initialize() {
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {
+
+ void autonomous() {
+    switch (auton_selection) {
+        case 0:
+            blueRightAuton();
+            break;
+        case 1:
+            blueLeftAuton();
+            break;
+        case 2:
+            redRightAuton();
+            break;
+        case 3:
+            redLeftAuton();
+            break;
+        case 4:
+            skillsAuton();
+            break;
+        default:
+            // None
+            break;
+    }
+}
+/*void autonomous1() {
     chassis.setPose(0,0,0);
         //RIGHTBLUE/RIGHT
     setIntake1(120);
@@ -240,7 +243,7 @@ void autonomous() {
     setIntake2(0);
     setIntake1(0);
 
-}
+}*/
 
 
 /**
@@ -268,12 +271,6 @@ void opcontrol() {
             autonomous();
         }
          
-        
-       /* setIntake1(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) * 127);
-        setIntake1(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) * -127);
-        setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) * 127);
-        setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) * -127);*/
-
         /*int speed = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) ? 127 : 0) +
                                 (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) ? -127 : 0);
 
@@ -304,6 +301,9 @@ void opcontrol() {
         
 		if (master.get_digital_new_press(DIGITAL_Y)) {
             toungue.toggle();
+		}
+        if (master.get_digital_new_press(DIGITAL_RIGHT)) {
+            wing.toggle();
 		}
 		
         // **Tank drive control**

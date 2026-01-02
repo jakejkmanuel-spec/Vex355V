@@ -7,6 +7,7 @@ pros::Motor intake2Motor(-13,pros::v5::MotorGears::blue);
 
 //pneumatics
 pros::adi::Pneumatics toungue('A', false);
+pros::adi::Pneumatics wing('B', false);
 //pros::adi::Pneumatics door('A', false);
 
 //sensors
