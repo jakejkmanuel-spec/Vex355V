@@ -19,10 +19,10 @@ lemlib::Drivetrain drivetrain(&left_mg, // left motor group
                               11.25, //track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               450, // drivetrain rpm 
-                              2 // horizontal drift is 2 (for now)
+                              8 // horizontal drift is 2 (for now)
 );
 
-pros::Imu imu(18); //main imu sensor  MAKE SURE TO CHECK PORTS OF BOTH IMUS
+pros::Imu imu(17); //main imu sensor  MAKE SURE TO CHECK PORTS OF BOTH IMUS
 //avg with other imu on port 18 when calling setpose
 
 // horizontal tracking wheel encoder
@@ -48,13 +48,13 @@ lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel
 // lateral PID controller
 lemlib::ControllerSettings lateral_controller(12, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              9, // derivative gain (kD)
+                                              12, // derivative gain (kD)
                                               3, // anti windup
                                               1, // small error range, in inches
                                               100, // small error range timeout, in milliseconds
                                               3, // large error range, in inches
                                               500, // large error range timeout, in milliseconds
-                                              20 // maximum acceleration (slew)
+                                              10 // maximum acceleration (slew)
 );
 
 // angular PID controller
@@ -145,7 +145,6 @@ void initialize() {
             //pros::lcd::print(5, "AVG IMU Heading: %f", avgImuHeading(imu.get_heading(), imu2.get_heading()));
             pros::lcd::print(6, "IMU Orientation: %f", imu.get_physical_orientation());
 
-            pros::lcd::print(7, "Rotation Sensor: %i", vertical_encoder.get_position());
             pros::delay(100);
         }
     });
@@ -187,9 +186,11 @@ void competition_initialize() {
  */
 
  void autonomous() {
+   
     switch (auton_selection) {
         case 0:
-            blueRightAuton();
+           // blueRightAuton();
+            skillsAuton();
             break;
         case 1:
             blueLeftAuton();
@@ -204,46 +205,9 @@ void competition_initialize() {
             skillsAuton();
             break;
         default:
-            // None
             break;
     }
 }
-/*void autonomous1() {
-    chassis.setPose(0,0,0);
-        //RIGHTBLUE/RIGHT
-    setIntake1(120);
-    chassis.moveToPoint(0, 17, 5000, {.maxSpeed = 80});
-    chassis.moveToPoint(-8, 30, 5000, {.maxSpeed = 80});
-    pros::delay(1000);
-    chassis.turnToHeading(-170, 500);
-    chassis.moveToPoint(-25, 0, 5000);
-    pros::delay(750);
-
-    toungue.extend();
-
-    chassis.turnToHeading(-200, 500);
-    chassis.moveToPoint(-19, -11, 1500);
-    setIntake1(0);
-    pros::delay(300);
-    chassis.moveToPoint(-20, -9, 1500, {.forwards = false});
-    pros::delay(300);
-    chassis.moveToPoint(-20, -15.5, 700, {.maxSpeed = 80});
-    pros::delay(500);
-    setIntake1(120);
-    pros::delay(1600);
-    
-     //RESET POS AT LOADER
-     chassis.setPose(-25,-10,-180);
-    chassis.moveToPoint(-23, 34, 1500, {.forwards = false});
-    pros::delay(1000);
-    setIntake2(120);
-    pros::delay(3000);
-
-
-    setIntake2(0);
-    setIntake1(0);
-
-}*/
 
 
 /**
@@ -263,7 +227,7 @@ void competition_initialize() {
 
 void opcontrol() {
     competition_initialize();
-    //autonomous();
+    autonomous();
     
     while (true) {
        
@@ -271,15 +235,6 @@ void opcontrol() {
             autonomous();
         }
          
-        /*int speed = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) ? 127 : 0) +
-                                (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) ? -127 : 0);
-
-        setIntake1(speed);
-
-        speed = (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) ? 127 : 0) +
-                                (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) ? -127 : 0);
-
-        setIntake2(speed);*/
 
         //Hack to fix PROS key stroke issues. it gives button press even when it not pressed.
        int r1State = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) ;
@@ -288,29 +243,39 @@ void opcontrol() {
              setIntake1(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) * -127);
         }
 
-        int l1State =  master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
-	    setIntake2(l1State* 127);
+        int l1State =  master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+	    setIntake2(l1State* -127);
+        
         if(l1State == 0){
-            setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) * -127);
+            if(flap.is_extended()){
+            setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) * 87);
+            }
+            else {
+                //slow down intake 2 if flap is down
+            setIntake2(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) * 127);
+            }
         }
 
-        if(master.get_digital_new_press(DIGITAL_X) && master.get_digital_new_press(DIGITAL_A)){
-             setIntake1(0);
-             setIntake2(0);
-        }
-        
 		if (master.get_digital_new_press(DIGITAL_Y)) {
             toungue.toggle();
 		}
         if (master.get_digital_new_press(DIGITAL_RIGHT)) {
             wing.toggle();
 		}
-		
+		if (master.get_digital_new_press(DIGITAL_DOWN)) {
+            flap.toggle();
+		}
         // **Tank drive control**
         int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         chassis.tank(leftY, rightY);
 
+         // Kill switch for continous chain move, if it occurs.
+        if(master.get_digital_new_press(DIGITAL_X) && master.get_digital_new_press(DIGITAL_A)){
+             setIntake1(0);
+             setIntake2(0);
+        }
+        
         if (!master.is_connected()) {
             setIntake1(0);
             setIntake2(0);
