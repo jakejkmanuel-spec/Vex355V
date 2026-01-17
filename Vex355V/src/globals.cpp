@@ -11,7 +11,8 @@ pros::adi::Pneumatics flap('C', false);
 
 //Distance Sensors
  pros::Distance distSensorLeft(19);
- //pros::Distance distSensorRight(7);
+ 
+ pros::Distance distSensorRight(21);
 
 //pros::adi::Pneumatics door('A', false);
 

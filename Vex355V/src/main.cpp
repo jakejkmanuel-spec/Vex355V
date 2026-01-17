@@ -3,6 +3,8 @@
 #include "pros/llemu.hpp"
 #include "helpers.hpp"
 #include "globals.hpp"
+// #include "helpers.cpp"
+// #include "globals.cpp"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 #include "auton_selector.hpp"
@@ -58,9 +60,9 @@ lemlib::ControllerSettings lateral_controller(12, // proportional gain (kP)
 );
 
 // angular PID controller
-lemlib::ControllerSettings angular_controller(3.4, // proportional gain (kP)
+lemlib::ControllerSettings angular_controller(3.2, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              17, // derivative gain (kD)
+                                              20, // derivative gain (kD)
                                               3, // anti windup
                                               1, // small error range, in inches
                                               100, // small error range timeout, in milliseconds
@@ -189,8 +191,7 @@ void competition_initialize() {
    
     switch (auton_selection) {
         case 0:
-           // blueRightAuton();
-            skillsAuton();
+            blueRightAuton();
             break;
         case 1:
             blueLeftAuton();
@@ -227,14 +228,13 @@ void competition_initialize() {
 
 void opcontrol() {
     competition_initialize();
-    autonomous();
+    //autonomous();
     
     while (true) {
        
         if(master.get_digital_new_press(DIGITAL_A) && master.get_digital_new_press(DIGITAL_B)){
             autonomous();
         }
-         
 
         //Hack to fix PROS key stroke issues. it gives button press even when it not pressed.
        int r1State = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1) ;

@@ -1,6 +1,7 @@
 
 #include <cmath>
 #include "globals.hpp"
+//#include "globals.cpp"
 //#include "pros/rtos.hpp"
 
 
