@@ -4,7 +4,6 @@
 #include "pros/screen.h"
 #include "pros/screen.hpp"
 #include "pros/rtos.hpp"
-//#include "pros/llemu.hpp"
 
 // Global auton selection
 int auton_selection = 0;

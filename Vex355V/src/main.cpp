@@ -3,8 +3,6 @@
 #include "pros/llemu.hpp"
 #include "helpers.hpp"
 #include "globals.hpp"
-// #include "helpers.cpp"
-// #include "globals.cpp"
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 #include "auton_selector.hpp"
@@ -13,7 +11,7 @@
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup left_mg({-2, -7, -12},pros::MotorGearset::blue);   
-pros::MotorGroup right_mg({8, 9, 10}, pros::MotorGearset::blue);  
+pros::MotorGroup right_mg({8, 9, 18}, pros::MotorGearset::blue);  
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_mg, // left motor group
@@ -190,8 +188,8 @@ void competition_initialize() {
  void autonomous() {
    
     switch (auton_selection) {
-        case 0:
-            blueRightAuton();
+        case 0:    
+        blueRightAuton();
             break;
         case 1:
             blueLeftAuton();
@@ -229,11 +227,13 @@ void competition_initialize() {
 void opcontrol() {
     competition_initialize();
     //autonomous();
+    skillsAuton();
     
     while (true) {
        
         if(master.get_digital_new_press(DIGITAL_A) && master.get_digital_new_press(DIGITAL_B)){
-            autonomous();
+            //autonomous();
+            skillsAuton();
         }
 
         //Hack to fix PROS key stroke issues. it gives button press even when it not pressed.

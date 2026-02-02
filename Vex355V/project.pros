@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "right(AUTOSELECTO)",
+    "project_name": "tes(AUTOSELECTO)",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -636,7 +636,7 @@
     },
     "upload_options": {
       "description": "yo nigesh",
-      "slot": 1
+      "slot": 4
     },
     "use_early_access": false
   }
