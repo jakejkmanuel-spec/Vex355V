@@ -186,26 +186,27 @@ void competition_initialize() {
  */
 
  void autonomous() {
+    skillsAuton();
    
-    switch (auton_selection) {
-        case 0:    
-        blueRightAuton();
-            break;
-        case 1:
-            blueLeftAuton();
-            break;
-        case 2:
-            redRightAuton();
-            break;
-        case 3:
-            redLeftAuton();
-            break;
-        case 4:
-            skillsAuton();
-            break;
-        default:
-            break;
-    }
+    // switch (auton_selection) {
+    //     case 0:    
+    //     blueRightAuton();
+    //         break;
+    //     case 1:
+    //         blueLeftAuton();
+    //         break;
+    //     case 2:
+    //         redRightAuton();
+    //         break;
+    //     case 3:
+    //         redLeftAuton();
+    //         break;
+    //     case 4:
+    //         skillsAuton();
+    //         break;
+    //     default:
+    //         break;
+    // }
 }
 
 
@@ -227,7 +228,6 @@ void competition_initialize() {
 void opcontrol() {
     competition_initialize();
     //autonomous();
-    skillsAuton();
     //fixParking();
     
     while (true) {
