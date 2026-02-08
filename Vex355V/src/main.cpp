@@ -228,6 +228,7 @@ void opcontrol() {
     competition_initialize();
     //autonomous();
     skillsAuton();
+    //fixParking();
     
     while (true) {
        

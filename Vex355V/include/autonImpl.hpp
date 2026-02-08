@@ -5,4 +5,5 @@ void blueLeftAuton();
 void redRightAuton();
 void redLeftAuton(); 
 void skillsAuton();
+void fixParking();
 

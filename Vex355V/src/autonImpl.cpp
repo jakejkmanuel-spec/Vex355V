@@ -118,6 +118,7 @@ void  redLeftAuton(){
 }
 void skillsAuton(){
 
+    
     //move to loader
     chassis.setPose(0, 9, 90);
     chassis.moveToPoint(49.2, 9, 5000,{.maxSpeed = 75}); 
@@ -326,17 +327,32 @@ void skillsAuton(){
     pros::delay(1500);
     toungue.retract();
     
-    //PARK
-    chassis.moveToPoint(-52, 4, 5000);
-    setIntake2(0);
-    chassis.moveToPoint(-38,-15, 2000);    
-    chassis.turnToHeading(90,1500);
-    //backing up for momentum
-    chassis.moveToPoint(-48,-15, 2000, {.forwards = false});    
-    chassis.moveToPoint(-10, -20, 5000);
+    //PARKING Task
+    chassis.moveToPoint(-50, 16, 500);
+  
+    chassis.moveToPose( -34, 11,  90,  3000,{.forwards = true, .maxSpeed = 90});
+    chassis.moveToPose( 2, 18,  -180,  3000,{.forwards = true, .maxSpeed = 90});
+    chassis.waitUntilDone();
 
-    pros::delay(5000);      
-
+    //MAX SPEED TO PARK
+    chassis.moveToPoint(0, -16, 10000,{.maxSpeed = 120});
+    setIntake1( 120) ;
+    setIntake2(120);  
+    pros::delay(5000); 
 }
+    
 
+void fixParking(){
+    chassis.setPose(-50, 22, -180); // just for park test.
+    chassis.moveToPoint(-50, 16, 500);
+  
+    chassis.moveToPose( -34, 11,  90,  3000,{.forwards = true, .maxSpeed = 90});
+    chassis.moveToPose( 2, 18,  -180,  3000,{.forwards = true, .maxSpeed = 90});
+    chassis.waitUntilDone();
 
+    //MAX SPEED TO PARK
+    chassis.moveToPoint(0, -16, 10000,{.maxSpeed = 120});
+    setIntake1( 120) ;
+    setIntake2(120);  
+    pros::delay(5000); 
+}
