@@ -41,35 +41,38 @@ static double readDistanceInFiltered(pros::Distance& distSensor) {
 void blueRightAuton(){
 
     
-    chassis.setPose(0,0,0);
+    chassis.setPose(0,15,0);
     //RIGHTBLUE/RIGHT
     setIntake1(120);
-    chassis.moveToPoint(0, 17, 5000);
-    chassis.moveToPoint(9, 40, 7000, {.maxSpeed = 60});
+    //chassis.moveToPoint(0, 15, 10000, {.minSpeed=62, .earlyExitRange=2});
+    chassis.moveToPoint(10, 45, 7000, {.maxSpeed = 60});
     pros::delay(1200);
-    chassis.turnToHeading(170, 1000);
-    chassis.moveToPoint(33.5, 13, 5000);
+    chassis.turnToHeading(160, 1000);
+    chassis.moveToPoint(35.5, 13, 5000 , {.maxSpeed = 80});
+  
+    toungue.extend();
+  
     chassis.turnToHeading(180,1000);
     pros::delay(750);
 
-    toungue.extend();
 
-    chassis.moveToPoint(34, 3.8, 1500, {.maxSpeed = 50});
+    chassis.moveToPoint(35.5, 3.8, 1500, {.maxSpeed = 50});
     // Cool Hack . It never reach target so will hit the delay.
-    chassis.moveToPoint(34, 2.8,850, {.maxSpeed = 7});
+    chassis.moveToPoint(35.5, 0,650, {.maxSpeed = 7});
    
-    chassis.moveToPoint(34, 33.7, 3500, {.forwards = false, .maxSpeed = 70});
+    chassis.moveToPoint(35.5, 34, 3500, {.forwards = false, .maxSpeed = 70});
     pros::delay(800);
     setIntake2(120);
     // Cool Hack . It never reach target so will hit the delay.
-    chassis.moveToPoint(34, 35, 1700, {.forwards = false, .maxSpeed = 5});
+    chassis.cancelAllMotions();
+    chassis.moveToPoint(35.5, 50, 2000, {.forwards = false, .maxSpeed = 5});
     //pros::delay(1000);
     
-    //throw away extra balls
-    setIntake2(70);
+    // //throw away extra balls
+    // setIntake2(70);
 
-    chassis.moveToPoint(34, 3.8, 1500, {.maxSpeed = 50});
-    chassis.moveToPoint(34, 2.8,800, {.maxSpeed = 7});
+    // chassis.moveToPoint(35.5, 3.8, 1500, {.maxSpeed = 50});
+    // chassis.moveToPoint(35.5, 2.8,800, {.maxSpeed = 7});
 
     pros::delay(3000);
 
@@ -78,34 +81,50 @@ void blueRightAuton(){
 
 void blueLeftAuton(){
    
-    chassis.setPose(0,0,0);
+    chassis.setPose(4.176,14.138,-20.57);
     //RIGHTBLUE/RIGHT
-    setIntake1(120);
-    chassis.moveToPoint(0, 17, 5000);
-    chassis.moveToPoint(-9, 40, 7000, {.maxSpeed = 60});
-    pros::delay(1200);
-    chassis.turnToHeading(-170, 1000);
-    chassis.moveToPoint(-33.5, 13, 5000);
-    chassis.turnToHeading(-180,1000);
-    pros::delay(750);
+    setIntake1(127);
+    wing.extend();
 
+    //chassis.moveToPoint(0, 17, 5000, {});
+    chassis.moveToPoint(-4.28, 31.13, 7000, { .minSpeed = 30, .earlyExitRange = 4});
+    pros::delay(500);
     toungue.extend();
+    chassis.moveToPoint(-9.64, 42.4, 7000, {.maxSpeed = 40});
 
-    chassis.moveToPoint(-34, 3.8, 1500, {.maxSpeed = 50});
-    chassis.moveToPoint(-34, 2.8,850, {.maxSpeed = 7});
-   
-    chassis.moveToPoint(-34, 33.7, 3500, {.forwards = false, .maxSpeed = 70});
-    pros::delay(800);
+    //pros::delay(100);
+    //chassis.turnToHeading(-150, 1000,{ .minSpeed = 30, .earlyExitRange = 2});
+    chassis.moveToPoint(-28.5, 20, 5000, { .minSpeed = 30, .earlyExitRange = 4});
+    //chassis.turnToHeading(180,1000);
+    toungue.retract();
+    chassis.moveToPoint(-28.5, 30, 5000, {.forwards = false, .maxSpeed = 70});
+    chassis.moveToPose(-28.5, 34,180, 1500, {.forwards = false});
+    pros::delay(100);
     setIntake2(120);
     // Cool Hack . It never reach target so will hit the delay.
-    chassis.moveToPoint(-34, 35, 1700, {.forwards = false, .maxSpeed = 5});
+    chassis.moveToPoint(-30, 37, 200, {.forwards = false, .maxSpeed = 5});
+    int x = chassis.getPose().x;
     //pros::delay(1000);
-    
-    //throw away extra balls
-      setIntake2(70);
-    chassis.moveToPoint(-34, 3.8, 1500, {.maxSpeed = 50});
-    chassis.moveToPoint(-34, 2.8,800, {.maxSpeed = 7});
+    chassis.moveToPoint(x, 17, 5000, { .minSpeed = 30, .earlyExitRange = 2});
+    chassis.moveToPoint(x+6.5, 25, 5000, {.forwards = false,.minSpeed = 30, .earlyExitRange = 4});
+    chassis.turnToHeading(180, 1000, { .minSpeed = 30, .earlyExitRange = 2});
+    wing.retract();
+    chassis.moveToPoint(x+6.5, 45, 5000, {.forwards = false});
 
+    
+    //_______
+    
+    // pros::delay(300);
+    // wing.retract();
+    //chassis.moveToPoint(-20, 45, 700, {.forwards = false,.minSpeed = 30, .earlyExitRange = 4});
+    
+    
+    
+    
+    // chassis.setPose(0,0,180);    
+    // chassis.swingToHeading(0, lemlib::DriveSide::LEFT,4000, {.direction = lemlib::AngularDirection::CCW_COUNTERCLOCKWISE}); 
+
+    
     pros::delay(3000);
     
 }
@@ -114,8 +133,45 @@ void redRightAuton(){
     
 }
 void  redLeftAuton(){
-    blueLeftAuton();
     
+    
+    chassis.setPose(0,15,0);
+    //RIGHTBLUE/RIGHT
+    setIntake1(120);
+    //chassis.moveToPoint(0, 15, 10000, {.minSpeed=62, .earlyExitRange=2});
+    chassis.moveToPoint(-10, 45, 7000, {.maxSpeed = 60});
+    pros::delay(1200);
+    chassis.turnToHeading(-160, 1000);
+    chassis.moveToPoint(-30, 13, 5000 , {.maxSpeed = 80});
+  
+    toungue.extend();
+    wing.extend();
+
+    chassis.turnToHeading(180,1000);
+    pros::delay(750);
+
+
+    chassis.moveToPoint(-31, 3.8, 1500, {.maxSpeed = 50});
+    // Cool Hack . It never reach target so will hit the delay.
+    chassis.moveToPoint(-31, 0,600, {.maxSpeed = 7});
+   
+    chassis.moveToPoint(-30, 37, 3500, {.forwards = false, .maxSpeed = 70});
+    pros::delay(800);
+    setIntake2(120);
+    // Cool Hack . It never reach target so will hit the delay.
+    chassis.cancelAllMotions();
+    chassis.moveToPoint(-30, 50, 2000, {.forwards = false, .maxSpeed = 5});
+    //pros::delay(1000);
+    
+    // //throw away extra balls
+    // setIntake2(70);
+
+    // chassis.moveToPoint(-35.5, 3.8, 1500, {.maxSpeed = 50});
+    // chassis.moveToPoint(-35.5, 2.8,800, {.maxSpeed = 7});
+
+    pros::delay(3000);
+
+
 }
 void skillsAuton(){
 

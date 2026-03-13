@@ -19,7 +19,7 @@ lemlib::Drivetrain drivetrain(&left_mg, // left motor group
                               11.25, //track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               450, // drivetrain rpm 
-                              8 // horizontal drift is 2 (for now)
+                              0.1 // horizontal drift is 2 (for now)
 );
 
 pros::Imu imu(17); //main imu sensor  MAKE SURE TO CHECK PORTS OF BOTH IMUS
@@ -29,13 +29,13 @@ pros::Imu imu(17); //main imu sensor  MAKE SURE TO CHECK PORTS OF BOTH IMUS
 // pros::Rotation horizontal_encoder(4);
 
 // vertical tracking wheel encoder
-pros::Rotation vertical_encoder(16);
+pros::Rotation vertical_encoder(2);
 // horizontal tracking wheel
 
  // lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 2.625); 
 
 // vertical tracking wheel
-lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_2, -0.375); 
+lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_2, -0.325); 
 // odometry settings
 
 lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel 1, set to null
@@ -46,19 +46,19 @@ lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel
 );
 
 // lateral PID controller
-lemlib::ControllerSettings lateral_controller(12, // proportional gain (kP)
+lemlib::ControllerSettings lateral_controller(13, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              12, // derivative gain (kD)
+                                              25, // derivative gain (kD)
                                               3, // anti windup
                                               1, // small error range, in inches
                                               100, // small error range timeout, in milliseconds
                                               3, // large error range, in inches
                                               500, // large error range timeout, in milliseconds
-                                              10 // maximum acceleration (slew)
+                                              20 // maximum acceleration (slew)
 );
 
 // angular PID controller
-lemlib::ControllerSettings angular_controller(3.2, // proportional gain (kP)
+lemlib::ControllerSettings angular_controller(4, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               20, // derivative gain (kD)
                                               3, // anti windup
@@ -133,7 +133,7 @@ void initialize() {
     pros::lcd::set_text(0, "IMU Ready!");
     
     //Screen selector task for Auton
-    auton_selector_init();
+    //auton_selector_init();
 
     pros::Task screen_task([]() {
         while (true) {
@@ -186,8 +186,12 @@ void competition_initialize() {
  */
 
  void autonomous() {
+    //skillsAuton();
+    // chassis.setPose(0, 0, 0);
+    
+    // chassis.turnToHeading(90,1000);
     skillsAuton();
-   
+
     // switch (auton_selection) {
     //     case 0:    
     //     blueRightAuton();
@@ -233,8 +237,8 @@ void opcontrol() {
     while (true) {
        
         if(master.get_digital_new_press(DIGITAL_A) && master.get_digital_new_press(DIGITAL_B)){
-            //autonomous();
-            skillsAuton();
+            autonomous();
+            //skillsAuton();
         }
 
         //Hack to fix PROS key stroke issues. it gives button press even when it not pressed.
