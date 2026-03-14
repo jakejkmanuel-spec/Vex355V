@@ -190,7 +190,7 @@ void competition_initialize() {
     // chassis.setPose(0, 0, 0);
     
     // chassis.turnToHeading(90,1000);
-    skillsAuton();
+    blueRightAuton();
 
     // switch (auton_selection) {
     //     case 0:    
@@ -231,7 +231,7 @@ void competition_initialize() {
 
 void opcontrol() {
     competition_initialize();
-    autonomous();
+    //autonomous();
     //fixParking();
     
     while (true) {

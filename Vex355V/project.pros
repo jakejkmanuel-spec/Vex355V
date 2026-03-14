@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "TEST code",
+    "project_name": "right",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -636,7 +636,7 @@
     },
     "upload_options": {
       "description": "yo nigesh",
-      "slot": 8
+      "slot": 1
     },
     "use_early_access": false
   }
