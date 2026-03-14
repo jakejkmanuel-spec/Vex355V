@@ -231,7 +231,7 @@ void competition_initialize() {
 
 void opcontrol() {
     competition_initialize();
-    //autonomous();
+    autonomous();
     //fixParking();
     
     while (true) {
